@@ -30,8 +30,16 @@ class User(UserMixin, db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Project model for the database table
+class Project(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    project_image = db.Column(db.String(200), nullable=False)
+    project_name = db.Column(db.String(100), nullable=False)
+    project_details = db.Column(db.Text, nullable=False)
+
 # Create the database tables
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 @login_required
@@ -156,7 +164,6 @@ def delete_user(user_id):
         flash("You do not have permission to perform this action.", 'error')
     return redirect(url_for('list_users'))
 
-
 # Project model for the database table
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -199,6 +206,7 @@ def add_project():
 
     flash("You do not have permission to access the Admin panel.", 'error')
     return redirect(url_for('dashboard'))
+
 # Admin Panel - List Projects
 @app.route('/admin/list_projects')
 @login_required

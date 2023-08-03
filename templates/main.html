@@ -38,39 +38,44 @@
     </header>
 
 
-    <!-- Section - AI & ML Topics -->
-    <section class="py-5">
-        <div class="container px-4 px-lg-5 mt-5">
-            <div class="row gx-4 gx-lg-5">
-                <!-- Row 1 -->
-    {% if projects %}
-        <div class="row">
-            {% for project in projects %}
+  <!-- Section - AI & ML Topics -->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5">
+            <!-- Row 1 -->
+            {% if projects %}
+            <div class="row">
+                {% for project in projects %}
                 <div class="col-12 col-md-6 col-lg-4 mb-4">
                     <div class="card">
                         <img src="{{ project.project_image }}" alt="{{ project.project_name }}" class="card-img-top" style="height: 200px;">
-                        <div class="card-body"><center>
-                            <h3 class="card-title">{{ project.project_name }}</h3>
-                            <p class="card-text">{{ project.project_details }}</p>
-                            <a href="" target="_blank" class="btn btn-outline-dark mt-auto">View Attachement</a>
-                       </center> </div>
+                        <div class="card-body">
+                            <center>
+                                <h3 class="card-title">{{ project.project_name }}</h3>
+                                <p class="card-text">{{ project.project_details }}</p>
+                                <a href="{{ url_for('request_project', project_id=project.id) }}" class="btn btn-outline-dark mt-auto">Request this Project</a>
+                            </center>
+                        </div>
                     </div>
                 </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No projects available.</p>
+            {% endif %}
         </div>
-    {% else %}
-        <p>No projects available.</p>
-    {% endif %}
-                    </div>
-                </div>
-    </section> 
-  <center> {% with messages = get_flashed_messages(with_categories=true) %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endwith %} </center>
+    </div>
+</section>
+<center>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endwith %}
+</center>
+
  <!-- Footer Section-->
         <footer class="py-5 bg-dark">
   <div class="container">
