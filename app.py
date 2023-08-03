@@ -106,6 +106,7 @@ def login():
 def register():
     if request.method == 'POST':
         username = request.form['username']
+        phone = request.form['phone']
         email = request.form['email']
         password = request.form['password']
 
@@ -119,7 +120,7 @@ def register():
                 flash('Email already exists. Please choose a different email.', 'error')
             else:
                 hashed_password = generate_password_hash(password)
-                new_user = User(username=username, email=email, password=hashed_password)
+                new_user = User(username=username, phone=phone, email=email, password=hashed_password)
                 db.session.add(new_user)
                 db.session.commit()
                 flash('Registration successful. You can now log in.', 'success')
