@@ -33,20 +33,27 @@ class User(UserMixin, db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Project model for the database table
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     project_image = db.Column(db.String(200), nullable=False)
     project_name = db.Column(db.String(100), nullable=False)
     project_details = db.Column(db.Text, nullable=False)
-    requests = db.relationship('ProjectRequest', backref='project', lazy=True)
+    
+    # Change the backref name to 'project_requests' in the relationship definition
+    requests = db.relationship('ProjectRequest', backref=db.backref('project', lazy=True))
 
-# ProjectRequest model for storing project requests
+
+# ProjectRequest model for the database table
 class ProjectRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
-    custom_message = db.Column(db.Text, nullable=False)
+    custom_message = db.Column(db.Text, nullable=True)
+
+    # Change the backref name to 'user' in the relationship definition
+    user = db.relationship('User', backref=db.backref('project_requests', lazy=True))
+
+
 
 class ProjectRequestForm(FlaskForm):
     custom_message = TextAreaField('Custom Message', validators=[DataRequired()])
