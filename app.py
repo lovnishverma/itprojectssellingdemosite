@@ -4,6 +4,9 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import pytz
+from flask_wtf import FlaskForm
+from wtforms import TextAreaField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'joa#1867$@817it'  # Replace with a strong random key
@@ -36,6 +39,18 @@ class Project(db.Model):
     project_image = db.Column(db.String(200), nullable=False)
     project_name = db.Column(db.String(100), nullable=False)
     project_details = db.Column(db.Text, nullable=False)
+    requests = db.relationship('ProjectRequest', backref='project', lazy=True)
+
+# ProjectRequest model for storing project requests
+class ProjectRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    custom_message = db.Column(db.Text, nullable=False)
+
+class ProjectRequestForm(FlaskForm):
+    custom_message = TextAreaField('Custom Message', validators=[DataRequired()])
+    submit = SubmitField('Request this Project')
 
 # Create the database tables
 with app.app_context():
@@ -135,7 +150,30 @@ def register():
                 return redirect(url_for('login'))
 
     return render_template('register.html')
+@app.route('/request_project/<int:project_id>', methods=['GET', 'POST'])
+@login_required
+def request_project(project_id):
+    project = Project.query.get(project_id)
 
+    if project is None:
+        flash("Project not found.", 'error')
+        return redirect(url_for('dashboard'))
+
+    form = ProjectRequestForm()
+
+    if form.validate_on_submit():
+        custom_message = form.custom_message.data
+
+        # Store the project request in the database
+        new_request = ProjectRequest(user_id=current_user.id, project_id=project.id, custom_message=custom_message)
+        db.session.add(new_request)
+        db.session.commit()
+
+        flash("Project request sent successfully.", 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('request_project.html', form=form)
+  
 @app.route('/users')
 @login_required
 def list_users():
@@ -173,6 +211,19 @@ def admin_panel():
     
     flash("You do not have permission to access the Admin panel.", 'error')
     return redirect(url_for('dashboard'))
+
+@app.route('/admin/project_requests')
+@login_required
+def project_requests():
+    if current_user.is_authenticated and current_user.username == "admin":
+        # Fetch all project requests from the database
+        project_requests = ProjectRequest.query.all()
+
+        return render_template('project_requests.html', project_requests=project_requests)
+
+    flash("You do not have permission to access the Admin panel.", 'error')
+    return redirect(url_for('dashboard'))
+
 
 # Admin Panel - Add New Project
 @app.route('/admin/add_project', methods=['GET', 'POST'])

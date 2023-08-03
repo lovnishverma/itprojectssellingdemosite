@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Head content -->
+</head>
+<body>
+    <h1>Project Requests</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Project</th>
+                <th>Custom Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in project_requests %}
+                <tr>
+                    <td>{{ request.user.username }}</td>
+                    <td>{{ request.project.project_name }}</td>
+                    <td>{{ request.custom_message }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

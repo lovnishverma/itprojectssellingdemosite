@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Head content -->
+</head>
+<body>
+    <h1>Request Project</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.custom_message.label }} {{ form.custom_message() }}
+        {{ form.submit() }}
+    </form>
+</body>
+</html>
