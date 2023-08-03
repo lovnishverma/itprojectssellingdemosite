@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import pytz
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'ab#1867$@817'  # Replace with a strong random key
+app.config['SECRET_KEY'] = 'joa#1867$@817it'  # Replace with a strong random key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'  # Database filename
 
 db = SQLAlchemy(app)
@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    phone = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
@@ -80,10 +81,10 @@ def dashboard():
     visitor_count = get_visitor_count()
     username = current_user.username  # Get the username of the current user
     
-    # Fetch all topics from the database
-    topics = Topic.query.all()
+    # Fetch all projects from the database
+    projects = Project.query.all()
 
-    return render_template("main.html", topics=topics, username=username, time_of_day=time_of_day, date=date, time=time, year=year, visitor_count=visitor_count)
+    return render_template("main.html", projects=projects, username=username, time_of_day=time_of_day, date=date, time=time, year=year, visitor_count=visitor_count)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -155,13 +156,12 @@ def delete_user(user_id):
     return redirect(url_for('list_users'))
 
 
-# Topic model for the database table
-class Topic(db.Model):
+# Project model for the database table
+class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    topic_image = db.Column(db.String(200), nullable=False)
-    topic_name = db.Column(db.String(100), nullable=False)
-    topic_details = db.Column(db.Text, nullable=False)
-    pdf_link = db.Column(db.String(200), nullable=False)
+    project_image = db.Column(db.String(200), nullable=False)
+    project_name = db.Column(db.String(100), nullable=False)
+    project_details = db.Column(db.Text, nullable=False)
 
 # Admin Panel - Main Page
 @app.route('/admin')
@@ -173,83 +173,80 @@ def admin_panel():
     flash("You do not have permission to access the Admin panel.", 'error')
     return redirect(url_for('dashboard'))
 
-# Admin Panel - Add New Topic
-@app.route('/admin/add_topic', methods=['GET', 'POST'])
+# Admin Panel - Add New Project
+@app.route('/admin/add_project', methods=['GET', 'POST'])
 @login_required
-def add_topic():
+def add_project():
     if current_user.is_authenticated and current_user.username == "admin":
         if request.method == 'POST':
-            topic_image = request.form['topicImage']
-            topic_name = request.form['topicName']
-            topic_details = request.form['topicDetails']
-            pdf_link = request.form['pdfLink']
+            project_image = request.form['projectImage']
+            project_name = request.form['projectName']
+            project_details = request.form['projectDetails']
 
-            # Store the topic data in the database
-            new_topic = Topic(
-                topic_image=topic_image,
-                topic_name=topic_name,
-                topic_details=topic_details,
-                pdf_link=pdf_link
+            # Store the project data in the database
+            new_project = Project(
+                project_image=project_image,
+                project_name=project_name,
+                project_details=project_details,
             )
-            db.session.add(new_topic)
+            db.session.add(new_project)
             db.session.commit()
-            flash("Topic added successfully.", 'success')
+            flash("Project added successfully.", 'success')
             return redirect(url_for('admin_panel'))
 
-        return render_template('add_topic.html')
+        return render_template('add_project.html')
 
     flash("You do not have permission to access the Admin panel.", 'error')
     return redirect(url_for('dashboard'))
-# Admin Panel - List Topics
-@app.route('/admin/list_topics')
+# Admin Panel - List Projects
+@app.route('/admin/list_projects')
 @login_required
-def list_topics():
+def list_projects():
     if current_user.is_authenticated and current_user.username == "admin":
-        topics = Topic.query.all()
-        return render_template('list_topics.html', topics=topics)
+        projects = Project.query.all()
+        return render_template('list_projects.html', projects=projects)
 
     flash("You do not have permission to access the Admin panel.", 'error')
     return redirect(url_for('dashboard'))
 
-# Admin Panel - Modify Topic
-@app.route('/admin/modify_topic/<int:topic_id>', methods=['GET', 'POST'])
+# Admin Panel - Modify Project
+@app.route('/admin/modify_project/<int:project_id>', methods=['GET', 'POST'])
 @login_required
-def modify_topic(topic_id):
+def modify_project(project_id):
     if current_user.is_authenticated and current_user.username == "admin":
-        topic = Topic.query.get(topic_id)
+        project = Project.query.get(project_id)
 
-        if topic is None:
-            flash("Topic not found.", 'error')
+        if project is None:
+            flash("Project not found.", 'error')
             return redirect(url_for('admin_panel'))
 
         if request.method == 'POST':
-            topic.topic_image = request.form['topicImage']
-            topic.topic_name = request.form['topicName']
-            topic.topic_details = request.form['topicDetails']
-            topic.pdf_link = request.form['pdfLink']
+            project.project_image = request.form['projectImage']
+            project.project_name = request.form['projectName']
+            project.project_details = request.form['projectDetails']
 
             db.session.commit()
-            flash("Topic updated successfully.", 'success')
+            flash("Project updated successfully.", 'success')
             return redirect(url_for('admin_panel'))
 
-        return render_template('modify_topic.html', topic=topic)
+        return render_template('modify_project.html', project=project)
 
     flash("You do not have permission to access the Admin panel.", 'error')
     return redirect(url_for('dashboard'))
 
-# Admin Panel - Delete Topic
-@app.route('/admin/delete_topic/<int:topic_id>', methods=['POST'])
+# Admin Panel - Delete Project
+@app.route('/admin/delete_project/<int:project_id>', methods=['POST'])
 @login_required
-def delete_topic(topic_id):
+def delete_project(project_id):
     if current_user.is_authenticated and current_user.username == "admin":
-        topic = Topic.query.get(topic_id)
+        project = Project.query.get(project_id)
 
-        if topic is None:
-            flash("Topic not found.", 'error')
+        if project is None:
+            flash("Project not found.", 'error')
         else:
-            db.session.delete(topic)
+            db.session.delete(project)
             db.session.commit()
-            flash("Topic deleted successfully.", 'success')
+            flash("Project deleted successfully.", 'success')
 
     return redirect(url_for('admin_panel'))
 

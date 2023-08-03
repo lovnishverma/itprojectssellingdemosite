@@ -26,7 +26,6 @@
             <li class="list-group-item">
                 <strong>Topic Name:</strong> {{ topic.topic_name }}<br>
                 <strong>Topic Details:</strong> {{ topic.topic_details }}<br>
-                <strong>PDF Link:</strong> <a href="{{ topic.pdf_link }}" target="_blank">{{ topic.pdf_link }}</a><br>
                 <strong>Topic Image:</strong> <img src="{{ topic.topic_image }}" alt="{{ topic.topic_name }}" style="max-width: 200px;">
                 <form class="d-inline" action="{{ url_for('modify_topic', topic_id=topic.id) }}" method="GET">
                     <button type="submit" class="btn btn-primary">Modify</button>

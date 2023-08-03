@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Project</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-4">
+       <center> <h1>Add New Project</h1></center>
+        <form action="{{ url_for('add_project') }}" method="post">
+            <div class="form-group">
+                <label for="projectImage"><span style="color: red;">*</span>Project Image URL:</label>
+                <input type="text" class="form-control" id="projectImage" name="projectImage" required>
+            </div>
+
+            <div class="form-group">
+                <label for="projectName"><span style="color: red;">*</span>Project Name:</label>
+                <input type="text" class="form-control" id="projectName" name="projectName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="projectDetails">Project Details:</label>
+                <textarea class="form-control" id="projectDetails" name="projectDetails"></textarea>
+            </div>
+<center>
+            <button type="submit" class="btn btn-primary">Add Project</button> </center>
+        </form>
+        <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary mt-3">Back to Admin Panel</a>
+  
+          </div>
+
+    <!-- Add Bootstrap JS and jQuery scripts (required for Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
