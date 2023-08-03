@@ -52,8 +52,8 @@
                         <div class="card-body"><center>
                             <h3 class="card-title">{{ topic.topic_name }}</h3>
                             <p class="card-text">{{ topic.topic_details }}</p>
-                       <a href="{{ url_for('request_project', topic_id=topic.id) }}" target="_blank" class="btn btn-outline-dark mt-auto">Request Project</a>
-                          </center> </div>
+                            <a href="{{ topic.pdf_link }}" target="_blank" class="btn btn-outline-dark mt-auto">View Attachement</a>
+                       </center> </div>
                     </div>
                 </div>
             {% endfor %}
