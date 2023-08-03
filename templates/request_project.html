@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Project</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Request Project</h2>
+        <form method="POST">
+            {{ form.csrf_token }}
+            <div class="mb-3">
+                <label for="project_name" class="form-label">Project Name</label>
+                {{ form.project_name(class="form-control", id="project_name") }}
+            </div>
+            <div class="mb-3">
+                <label for="project_details" class="form-label">Project Details</label>
+                {{ form.project_details(class="form-control", id="project_details") }}
+            </div>
+            <div class="mb-3">
+                <label for="message_to_admin" class="form-label">Message to Admin</label>
+                {{ form.message_to_admin(class="form-control", id="message_to_admin", rows=4) }}
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

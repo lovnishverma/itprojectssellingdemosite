@@ -4,6 +4,9 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import pytz
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ab#1867$@817'  # Replace with a strong random key
@@ -31,6 +34,20 @@ def load_user(user_id):
 
 # Create the database tables
 db.create_all()
+
+# Project model for the database table
+class Project(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    project_name = db.Column(db.String(100), nullable=False)
+    project_details = db.Column(db.Text, nullable=False)
+    message_to_admin = db.Column(db.Text)  # New field for user message to admin
+
+# Form to create a new project
+class NewProjectForm(FlaskForm):
+    project_name = StringField('Project Name', validators=[DataRequired()])
+    project_details = TextAreaField('Project Details', validators=[DataRequired()])
+    message_to_admin = TextAreaField('Message to Admin')  # Add the new message field
+    submit = SubmitField('Create Project')
 
 @app.route('/')
 @login_required
@@ -126,6 +143,30 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/request_project', methods=['GET', 'POST'])
+@login_required
+def request_project():
+    form = NewProjectForm()
+
+    if form.validate_on_submit():
+        project_name = form.project_name.data
+        project_details = form.project_details.data
+        message_to_admin = form.message_to_admin.data  # Get the user's message
+
+        # Store the project data and message in the database
+        new_project = Project(
+            project_name=project_name,
+            project_details=project_details,
+            message_to_admin=message_to_admin  # Save the user's message
+        )
+        db.session.add(new_project)
+        db.session.commit()
+
+        flash("Project request sent successfully.", 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('request_project.html', form=form)
+  
 @app.route('/users')
 @login_required
 def list_users():
@@ -161,7 +202,7 @@ class Topic(db.Model):
     topic_image = db.Column(db.String(200), nullable=False)
     topic_name = db.Column(db.String(100), nullable=False)
     topic_details = db.Column(db.Text, nullable=False)
-    pdf_link = db.Column(db.String(200), nullable=False)
+  
 
 # Admin Panel - Main Page
 @app.route('/admin')
@@ -182,14 +223,14 @@ def add_topic():
             topic_image = request.form['topicImage']
             topic_name = request.form['topicName']
             topic_details = request.form['topicDetails']
-            pdf_link = request.form['pdfLink']
+            
 
             # Store the topic data in the database
             new_topic = Topic(
                 topic_image=topic_image,
                 topic_name=topic_name,
                 topic_details=topic_details,
-                pdf_link=pdf_link
+                
             )
             db.session.add(new_topic)
             db.session.commit()
@@ -226,7 +267,7 @@ def modify_topic(topic_id):
             topic.topic_image = request.form['topicImage']
             topic.topic_name = request.form['topicName']
             topic.topic_details = request.form['topicDetails']
-            topic.pdf_link = request.form['pdfLink']
+           
 
             db.session.commit()
             flash("Topic updated successfully.", 'success')
