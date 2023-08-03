@@ -164,13 +164,6 @@ def delete_user(user_id):
         flash("You do not have permission to perform this action.", 'error')
     return redirect(url_for('list_users'))
 
-# Project model for the database table
-class Project(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    project_image = db.Column(db.String(200), nullable=False)
-    project_name = db.Column(db.String(100), nullable=False)
-    project_details = db.Column(db.Text, nullable=False)
-
 # Admin Panel - Main Page
 @app.route('/admin')
 @login_required

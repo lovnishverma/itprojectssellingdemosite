@@ -3,31 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modify Topic</title>
+    <title>Modify Project</title>
     <!-- Add Bootstrap CSS link -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-4">
-        <h1>Modify Topic</h1>
-        <form method="post" action="{{ url_for('modify_topic', topic_id=topic.id) }}">
+        <h1>Modify Project</h1>
+        <form method="post" action="{{ url_for('modify_project', project_id=project.id) }}">
             <div class="form-group">
-                <label for="topicImage">Topic Image URL:</label>
-                <input type="text" class="form-control" id="topicImage" name="topicImage" value="{{ topic.topic_image }}" required>
+                <label for="projectImage">Project Image URL:</label>
+                <input type="text" class="form-control" id="projectImage" name="projectImage" value="{{ project.project_image }}" required>
             </div>
             <div class="form-group">
-                <label for="topicName">Topic Name:</label>
-                <input type="text" class="form-control" id="topicName" name="topicName" value="{{ topic.topic_name }}" required>
+                <label for="projectName">Project Name:</label>
+                <input type="text" class="form-control" id="projectName" name="projectName" value="{{ project.project_name }}" required>
             </div>
             <div class="form-group">
-                <label for="topicDetails">Topic Details:</label>
-                <textarea class="form-control" id="topicDetails" name="topicDetails" rows="4">{{ topic.topic_details }}</textarea>
+                <label for="projectDetails">Project Details:</label>
+                <textarea class="form-control" id="projectDetails" name="projectDetails" rows="4">{{ project.project_details }}</textarea>
             </div>
-            <div class="form-group">
-                <label for="pdfLink">PDF Link:</label>
-                <input type="text" class="form-control" id="pdfLink" name="pdfLink" value="{{ topic.pdf_link }}" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Update Topic</button>
+            <button type="submit" class="btn btn-primary">Update Project</button>
         </form>
         <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary mt-3">Back to Admin Panel</a>
     </div>
